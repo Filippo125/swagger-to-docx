@@ -11,16 +11,16 @@ def build_api_section(swagger: SwaggerParser, doc: Document):
 			doc.add_heading(m_api["summary"], level=3)
 			doc.add_paragraph(m_api.get("description", ""))
 			p = doc.add_paragraph("")
-			p.add_run('Method:').bold = True
+			p.add_run('Method: ').bold = True
 			p.add_run("%s\n" % (method.upper()))
 			body_ref = swagger.get_body_ref(m_api)
-			p.add_run('Body:').bold = True
+			p.add_run('Body: ').bold = True
 			if body_ref:
 				# doc.add_paragraph("Body: \n" )#, style='List Bullet')
 				table = doc.add_table(rows=1, cols=1)
 				table.rows[0].cells[0].text = json.dumps(swagger.build_example_object(swagger.get_ref(body_ref)), indent=2)
 			else:
-				p.add_run("No body content are required")
+				p.add_run("No body content is required")
 			doc.add_paragraph("").add_run("Responses:").bold = True
 			table = doc.add_table(rows=1, cols=3)
 			table.style = 'Light List Accent 1'
@@ -70,7 +70,12 @@ def build_model_section(swagger: SwaggerParser, doc: Document):
 			if tp == "object":
 				f_text += "\n See %s for detail" % (prop["$ref"].split("/")[-1])
 			elif tp == "array":
-				f_text += "\n See %s for detail" % (prop["items"]["$ref"].split("/")[-1])
+				# check if array items has reference to object
+				if "$ref" in prop["items"]:
+					f_text += "\n See %s for detail" % (prop["items"]["$ref"].split("/")[-1])
+				else:
+					# array has basic type field
+					f_text += "\n Array of %s" % (prop["items"]["type"])
 			row_cells[2].text = f_text
 
 

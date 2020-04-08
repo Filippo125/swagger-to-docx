@@ -29,7 +29,12 @@ class SwaggerParser:
 			for key, prop in props.items():
 				if "type" in prop:
 					if prop["type"] == "array":
-						tmp[key] = [self.build_example_object(obj=self.get_ref(ref=prop["items"]["$ref"]))]
+						# check if array items has reference to object
+						if "$ref" in prop["items"]:
+							tmp[key] = [self.build_example_object(obj=self.get_ref(ref=prop["items"]["$ref"]))]
+						else:
+							# array has basic type field
+							tmp[key] = [prop["items"]["type"]]
 					else:
 						tmp[key] = prop["type"]
 				elif "$ref" in prop:
