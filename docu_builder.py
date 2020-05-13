@@ -9,10 +9,14 @@ def build_api_section(swagger: SwaggerParser, doc: Document):
 	for path, path_api in swagger.get_path().items():
 		for method, m_api in path_api.items():
 			# if available use summary as api title, if not use operationId, if not use empty string
-			summary = m_api.get("summary", m_api.get("operationId",""))
+			summary = m_api.get("summary", m_api.get("operationId", ""))
 			doc.add_heading(summary, level=3)
 			doc.add_paragraph(m_api.get("description", ""))
 			p = doc.add_paragraph("")
+			if "x-scope" in m_api:
+				p.add_run('Scope: \n').bold = True
+				for scope in m_api["x-scope"]:
+					p.add_run("- %s\n" % scope)
 			p.add_run('Path: ').bold = True
 			p.add_run('%s\n' %(path))
 			p.add_run('Method: ').bold = True
