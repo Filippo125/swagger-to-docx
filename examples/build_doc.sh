@@ -8,7 +8,7 @@ function run_test() {
   output=$(echo $name | awk -F'.yaml' '{ print $1 }')".docx"
   echo "Build: $name"
 
-  python ../main.py --swagger https://github.com/OAI/OpenAPI-Specification/raw/master/examples/v2.0/yaml/$name --out $output
+  python swagger-to-docx --swagger https://github.com/OAI/OpenAPI-Specification/raw/master/examples/v2.0/yaml/$name --out $output
   rs=$?
   if [ $rs -eq 0 ]
   then
