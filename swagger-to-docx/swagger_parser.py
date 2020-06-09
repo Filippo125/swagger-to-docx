@@ -67,6 +67,17 @@ class SwaggerParser:
 		return None
 
 	@staticmethod
+	def get_header_refs(apistruct: dict):
+		if "parameters" not in apistruct:
+			return None
+		params = apistruct["parameters"]
+		out = []
+		for param in params:
+			if param["in"] == "header":
+				out.append(param)
+		return out
+
+	@staticmethod
 	def get_permission_list(api_struct) -> list:
 		perms = []
 		for sec in api_struct.get("security",[]):

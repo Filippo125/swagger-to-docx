@@ -21,8 +21,24 @@ def build_api_section(swagger: SwaggerParser, doc: Document):
 			p.add_run('%s\n' %(path))
 			p.add_run('Method: ').bold = True
 			p.add_run("%s\n" % (method.upper()))
+			### header
+			p.add_run('Header: ').bold = True
+			header_ref = swagger.get_header_refs(m_api)
+			n = len(header_ref)
+			if header_ref:
+				htable = doc.add_table(rows=n+1, cols=3)
+				htable.style = 'Light List Accent 1'
+				hhdr_cells = htable.rows[0].cells
+				hhdr_cells[0].text = 'Name'
+				hhdr_cells[1].text = 'Type'
+				hhdr_cells[2].text = 'Description'
+				for index in range(0, n):
+					htable.rows[index+1].cells[0].text = header_ref[index]["name"]
+					htable.rows[index+1].cells[1].text = header_ref[index]["type"]
+					htable.rows[index+1].cells[2].text = header_ref[index]["description"]
+			### body
 			body_ref = swagger.get_body_ref(m_api)
-			p.add_run('Body: ').bold = True
+			doc.add_paragraph("").add_run('Body: ').bold = True
 			if body_ref:
 				# doc.add_paragraph("Body: \n" )#, style='List Bullet')
 				table = doc.add_table(rows=1, cols=1)
