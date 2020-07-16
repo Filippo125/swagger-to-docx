@@ -5,12 +5,12 @@ from swagger_parser import SwaggerParser
 
 
 def build_api_section(swagger: SwaggerParser, doc: Document):
-	doc.add_heading('RestApi', level=2)
+	doc.add_heading('RestApi', level=1)
 	for path, path_api in swagger.get_path().items():
 		for method, m_api in path_api.items():
 			# if available use summary as api title, if not use operationId, if not use empty string
 			summary = m_api.get("summary", m_api.get("operationId", ""))
-			doc.add_heading(summary, level=3)
+			doc.add_heading(summary, level=2)
 			doc.add_paragraph(m_api.get("description", ""))
 			p = doc.add_paragraph("")
 			if "x-scope" in m_api:
@@ -24,8 +24,8 @@ def build_api_section(swagger: SwaggerParser, doc: Document):
 			### header
 			p.add_run('Header: ').bold = True
 			header_ref = swagger.get_header_refs(m_api)
-			n = len(header_ref)
 			if header_ref:
+				n = len(header_ref)
 				htable = doc.add_table(rows=n+1, cols=3)
 				htable.style = 'Light List Accent 1'
 				hhdr_cells = htable.rows[0].cells
@@ -54,7 +54,8 @@ def build_api_section(swagger: SwaggerParser, doc: Document):
 			hdr_cells[2].text = 'Content'
 			for code, resp in m_api["responses"].items():
 				row_cells = table.add_row().cells
-				row_cells[0].text = code
+				row_cells[0].text = str(code)
+
 				row_cells[1].text = resp.get("description", "")
 				if "schema" in resp:
 					if "$ref" in resp["schema"]:
@@ -76,11 +77,11 @@ def build_api_section(swagger: SwaggerParser, doc: Document):
 
 
 def build_model_section(swagger: SwaggerParser, doc: Document):
-	doc.add_heading('Models', level=2)
+	doc.add_heading('Models', level=1)
 	doc.add_paragraph("In this section all models used are described")
 	definitions = swagger.get_definitions()
 	for model, value in definitions.items():
-		doc.add_heading(model, level=3)
+		doc.add_heading(model, level=2)
 		doc.add_paragraph(value.get("description",""))
 		table = doc.add_table(rows=1, cols=3)
 		table.style = 'Light List Accent 1'
